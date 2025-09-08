@@ -1,20 +1,29 @@
 import Airtable from 'airtable';
 import type { Event, FilterOptions, DashboardStats } from '@/types';
 
-// Initialize Airtable with validation
-if (!process.env.AIRTABLE_API_KEY) {
-  throw new Error('AIRTABLE_API_KEY is not configured');
-}
-if (!process.env.AIRTABLE_BASE_ID) {
-  throw new Error('AIRTABLE_BASE_ID is not configured');
-}
+// Initialize Airtable - defer validation to runtime
+const getBase = () => {
+  if (!process.env.AIRTABLE_API_KEY) {
+    throw new Error('AIRTABLE_API_KEY is not configured');
+  }
+  if (!process.env.AIRTABLE_BASE_ID) {
+    throw new Error('AIRTABLE_BASE_ID is not configured');
+  }
+  
+  return new Airtable({
+    apiKey: process.env.AIRTABLE_API_KEY.trim()
+  }).base(process.env.AIRTABLE_BASE_ID.trim());
+};
 
-const base = new Airtable({
-  apiKey: process.env.AIRTABLE_API_KEY.trim()
-}).base(process.env.AIRTABLE_BASE_ID.trim());
+const getEventsTable = () => {
+  const base = getBase();
+  return base(process.env.AIRTABLE_EVENTS_TABLE_ID || 'Events');
+};
 
-const eventsTable = base(process.env.AIRTABLE_EVENTS_TABLE_ID || 'Events');
-const submissionsTable = base(process.env.AIRTABLE_SUBMISSIONS_TABLE_ID || 'Submissions');
+const getSubmissionsTable = () => {
+  const base = getBase();
+  return base(process.env.AIRTABLE_SUBMISSIONS_TABLE_ID || 'Submissions');
+};
 
 export class AirtableService {
   // Fetch all events with optional filters
@@ -40,7 +49,7 @@ export class AirtableService {
         filterFormula = `AND(${filterParts.join(', ')})`;
       }
 
-      const records = await eventsTable.select({
+      const records = await getEventsTable().select({
         filterByFormula: filterFormula,
         sort: [{ field: 'Date Start', direction: 'asc' }],
       }).all();
@@ -65,7 +74,7 @@ export class AirtableService {
   // Get single event by ID
   static async getEventById(id: string): Promise<Event | null> {
     try {
-      const record = await eventsTable.find(id);
+      const record = await getEventsTable().find(id);
       return {
         id: record.id,
         fields: record.fields as Event['fields']
@@ -82,7 +91,7 @@ export class AirtableService {
     status: string
   ): Promise<Event | null> {
     try {
-      const record = await eventsTable.update(eventId, {
+      const record = await getEventsTable().update(eventId, {
         'Registration Status': status
       });
       return {
@@ -98,7 +107,7 @@ export class AirtableService {
   // Add new event
   static async createEvent(eventData: Partial<Event['fields']>): Promise<Event> {
     try {
-      const record = await eventsTable.create(eventData);
+      const record = await getEventsTable().create(eventData);
       return {
         id: record.id,
         fields: record.fields as Event['fields']
@@ -176,7 +185,7 @@ export class AirtableSubmissionsService {
       const today = new Date();
       recordData['Submitted At'] = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
       
-      const record = await submissionsTable.create(recordData);
+      const record = await getSubmissionsTable().create(recordData);
       return {
         id: recordData['Submission ID'],
         airtableId: (record as any).id || recordData['Submission ID'],
@@ -190,7 +199,7 @@ export class AirtableSubmissionsService {
   // Get submission by ID and token
   static async getSubmission(id: string, token: string): Promise<any | null> {
     try {
-      const records = await submissionsTable.select({
+      const records = await getSubmissionsTable().select({
         filterByFormula: `AND({Submission ID} = '${id}', {Token} = '${token}')`,
         maxRecords: 1,
       }).all();
@@ -233,7 +242,7 @@ export class AirtableSubmissionsService {
         updateData['Denied At'] = new Date(timestamp).toISOString().split('T')[0];
       }
 
-      const record = await submissionsTable.update(airtableId, updateData);
+      const record = await getSubmissionsTable().update(airtableId, updateData);
       return {
         id: record.get('Submission ID'),
         status: record.get('Status'),
@@ -247,7 +256,7 @@ export class AirtableSubmissionsService {
   // Get all submissions (for admin purposes)
   static async getAllSubmissions(): Promise<any[]> {
     try {
-      const records = await submissionsTable.select({
+      const records = await getSubmissionsTable().select({
         sort: [{ field: 'Submitted At', direction: 'desc' }],
       }).all();
 
