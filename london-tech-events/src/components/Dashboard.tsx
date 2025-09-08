@@ -5,16 +5,21 @@ import type { Event, DashboardStats } from '@/types';
 interface DashboardProps {
   events: Event[];
   stats: DashboardStats | null;
-  onRefresh?: () => void;
 }
 
-export default function Dashboard({ events, stats, onRefresh }: DashboardProps) {
+export default function Dashboard({ events, stats }: DashboardProps) {
+  const now = new Date();
+  const sixWeeksFromNow = new Date(now.getTime() + (6 * 7 * 24 * 60 * 60 * 1000)); // 6 weeks in milliseconds
+  
   const upcomingEvents = events
-    .filter(e => new Date(e.fields['Date Start']) >= new Date())
+    .filter(e => {
+      const eventDate = new Date(e.fields['Date Start']);
+      return eventDate >= now && eventDate <= sixWeeksFromNow;
+    })
     .slice(0, 6);
 
   const mustAttendEvents = events
-    .filter(e => e.fields['Priority'] === 'Must Attend')
+    .filter(e => e.fields['Priority'] === 'High Priority' && new Date(e.fields['Date Start']) >= new Date())
     .slice(0, 4);
 
   return (
@@ -29,10 +34,10 @@ export default function Dashboard({ events, stats, onRefresh }: DashboardProps) 
             icon="📅"
           />
           <StatCard
-            title="Must Attend"
+            title="High Priority"
             value={stats.mustAttend}
-            color="from-red-400 to-red-600"
-            icon="🔴"
+            color="from-indigo-500 to-indigo-700"
+            icon="⭐"
           />
           <StatCard
             title="Free for Students"
@@ -40,22 +45,16 @@ export default function Dashboard({ events, stats, onRefresh }: DashboardProps) 
             color="from-green-400 to-green-600"
             icon="🎓"
           />
-          <StatCard
-            title="Registered"
-            value={stats.registered}
-            color="from-purple-400 to-purple-600"
-            icon="✅"
-          />
         </div>
       )}
 
-      {/* Must Attend Section */}
+      {/* High Priority Section */}
       {mustAttendEvents.length > 0 && (
         <section>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">🎯 Must Attend Events</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">🎯 High Priority Events</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {mustAttendEvents.map((event) => (
-              <EventCard key={event.id} event={event} onUpdate={onRefresh} />
+              <EventCard key={event.id} event={event} />
             ))}
           </div>
         </section>
@@ -66,7 +65,7 @@ export default function Dashboard({ events, stats, onRefresh }: DashboardProps) 
         <h2 className="text-2xl font-bold text-gray-800 mb-4">📅 Upcoming Events</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {upcomingEvents.map((event) => (
-            <EventCard key={event.id} event={event} onUpdate={onRefresh} />
+            <EventCard key={event.id} event={event} />
           ))}
         </div>
       </section>

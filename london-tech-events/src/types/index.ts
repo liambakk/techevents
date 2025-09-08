@@ -15,7 +15,7 @@ export interface Event {
     'Website': string;
     'Registration Link': string;
     'Target Audience'?: string[];
-    'Priority': 'Must Attend' | 'High Priority' | 'Medium Priority' | 'Low Priority' | 'Optional';
+    'Priority': 'High Priority' | 'Medium Priority' | 'Low Priority' | 'Optional';
     'Status': 'Confirmed' | 'Tentative' | 'Cancelled' | 'Postponed' | 'Sold Out';
     'Registration Status'?: string;
     'Notes'?: string;

@@ -37,8 +37,8 @@ export default function FiltersMinimal({ filters, onFilterChange }: FiltersProps
   };
 
   return (
-    <div className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="px-6 py-4">
+    <div className="border-b border-border/40 bg-background">
+      <div className="container mx-auto px-6 py-4">
         <div className="flex flex-wrap gap-3 items-center">
           {/* Search */}
           <div className="relative flex-1 min-w-[200px] max-w-sm">
@@ -61,7 +61,6 @@ export default function FiltersMinimal({ filters, onFilterChange }: FiltersProps
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value=" ">All Categories</SelectItem>
               <SelectItem value="AI/ML">AI/ML</SelectItem>
               <SelectItem value="Web3/Blockchain">Web3</SelectItem>
               <SelectItem value="FinTech">FinTech</SelectItem>
@@ -80,7 +79,6 @@ export default function FiltersMinimal({ filters, onFilterChange }: FiltersProps
               <SelectValue placeholder="Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value=" ">All Types</SelectItem>
               <SelectItem value="Conference">Conference</SelectItem>
               <SelectItem value="Hackathon">Hackathon</SelectItem>
               <SelectItem value="Workshop">Workshop</SelectItem>
@@ -100,7 +98,6 @@ export default function FiltersMinimal({ filters, onFilterChange }: FiltersProps
               <SelectValue placeholder="Cost" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value=" ">All</SelectItem>
               <SelectItem value="Free">Free</SelectItem>
               <SelectItem value="Free for Students">Student Free</SelectItem>
               <SelectItem value="Paid">Paid</SelectItem>
@@ -117,8 +114,6 @@ export default function FiltersMinimal({ filters, onFilterChange }: FiltersProps
               <SelectValue placeholder="Priority" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value=" ">All Priorities</SelectItem>
-              <SelectItem value="Must Attend">Must Attend</SelectItem>
               <SelectItem value="High Priority">High Priority</SelectItem>
               <SelectItem value="Medium Priority">Medium</SelectItem>
               <SelectItem value="Low Priority">Low Priority</SelectItem>

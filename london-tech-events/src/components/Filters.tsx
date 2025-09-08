@@ -31,7 +31,6 @@ export default function Filters({ filters, onFilterChange }: FiltersProps) {
             value={filters.category || ''}
             onChange={(e) => onFilterChange({ ...filters, category: e.target.value })}
           >
-            <option value="">All Categories</option>
             <option value="AI/ML">AI/ML</option>
             <option value="Web3/Blockchain">Web3/Blockchain</option>
             <option value="FinTech">FinTech</option>
@@ -50,7 +49,6 @@ export default function Filters({ filters, onFilterChange }: FiltersProps) {
             value={filters.eventType || ''}
             onChange={(e) => onFilterChange({ ...filters, eventType: e.target.value })}
           >
-            <option value="">All Types</option>
             <option value="Conference">Conference</option>
             <option value="Hackathon">Hackathon</option>
             <option value="Workshop">Workshop</option>
@@ -70,7 +68,6 @@ export default function Filters({ filters, onFilterChange }: FiltersProps) {
             value={filters.costType || ''}
             onChange={(e) => onFilterChange({ ...filters, costType: e.target.value })}
           >
-            <option value="">All</option>
             <option value="Free">Free</option>
             <option value="Free for Students">Free for Students</option>
             <option value="Paid">Paid</option>
@@ -87,8 +84,6 @@ export default function Filters({ filters, onFilterChange }: FiltersProps) {
             value={filters.priority || ''}
             onChange={(e) => onFilterChange({ ...filters, priority: e.target.value })}
           >
-            <option value="">All Priorities</option>
-            <option value="Must Attend">Must Attend</option>
             <option value="High Priority">High Priority</option>
             <option value="Medium Priority">Medium Priority</option>
             <option value="Low Priority">Low Priority</option>

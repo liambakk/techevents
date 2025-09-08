@@ -5,7 +5,6 @@ import {
   Calendar, 
   Users, 
   DollarSign, 
-  CheckCircle, 
   TrendingUp,
   Clock
 } from 'lucide-react';
@@ -25,22 +24,16 @@ export default function DashboardMinimal({ stats, loading }: DashboardProps) {
       color: 'text-foreground',
     },
     {
-      label: 'Must Attend',
+      label: 'High Priority',
       value: stats.mustAttend,
       icon: TrendingUp,
-      color: 'text-red-600',
+      color: 'text-indigo-600',
     },
     {
       label: 'Free for Students',
       value: stats.freeForStudents,
       icon: DollarSign,
       color: 'text-green-600',
-    },
-    {
-      label: 'Registered',
-      value: stats.registered,
-      icon: CheckCircle,
-      color: 'text-blue-600',
     },
     {
       label: 'This Month',
@@ -59,7 +52,7 @@ export default function DashboardMinimal({ stats, loading }: DashboardProps) {
   if (loading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {[...Array(6)].map((_, i) => (
+        {[...Array(5)].map((_, i) => (
           <Card key={i} className="border-muted/40">
             <CardContent className="p-4">
               <div className="animate-pulse space-y-2">

@@ -13,9 +13,10 @@ export async function GET(request: NextRequest) {
 
     const events = await AirtableService.getEvents(filters);
     return NextResponse.json(events);
-  } catch (_error) {
+  } catch (error) {
+    console.error('Error fetching events:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch events' },
+      { error: 'Failed to fetch events', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

@@ -1,41 +1,23 @@
 'use client';
 
+import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, ExternalLink, DollarSign } from 'lucide-react';
+import { Calendar, MapPin, DollarSign } from 'lucide-react';
 import { formatDate, formatTime } from '@/lib/utils';
-import toast from 'react-hot-toast';
 import type { Event } from '@/types';
 
 interface EventCardProps {
   event: Event;
-  onUpdate?: () => void;
 }
 
-export default function EventCardMinimal({ event, onUpdate }: EventCardProps) {
-  const handleRegister = async () => {
-    try {
-      const response = await fetch(`/api/events/${event.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 'Registration Status': 'Registered' })
-      });
-
-      if (response.ok) {
-        toast.success('Registration status updated!');
-        if (onUpdate) onUpdate();
-      }
-    } catch (_error) {
-      toast.error('Failed to update registration');
-    }
-  };
+export default function EventCardMinimal({ event }: EventCardProps) {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'Must Attend': return 'destructive';
       case 'High Priority': return 'default';
-      default: return 'secondary';
+      case 'Medium Priority': return 'secondary';
+      default: return 'outline';
     }
   };
 
@@ -50,8 +32,9 @@ export default function EventCardMinimal({ event, onUpdate }: EventCardProps) {
   const costBadge = getCostBadge();
 
   return (
-    <Card className="p-6 hover:shadow-sm transition-shadow border-muted/40">
-      <div className="space-y-4">
+    <Link href={`/events/${event.id}`} className="block">
+      <Card className="p-6 hover:shadow-sm transition-shadow border-muted/40 cursor-pointer">
+        <div className="space-y-4">
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
@@ -76,10 +59,28 @@ export default function EventCardMinimal({ event, onUpdate }: EventCardProps) {
             <span>{formatTime(event.fields['Date Start'])}</span>
           </div>
           
-          <div className="flex items-center gap-1.5">
-            <MapPin className="h-3.5 w-3.5" />
-            <span className="truncate max-w-[200px]">{event.fields['Venue']}</span>
-          </div>
+          {event.fields['Venue']?.toLowerCase() === 'virtual' ? (
+            <div className="flex items-center gap-1.5">
+              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              <span className="truncate max-w-[200px]">{event.fields['Venue']}</span>
+            </div>
+          ) : (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.fields['Venue'] + ', ' + (event.fields['Address'] || 'London'))}`, '_blank');
+              }}
+              className="flex items-center gap-1.5 hover:text-foreground transition-colors"
+            >
+              <MapPin className="h-3.5 w-3.5" />
+              <span className="truncate max-w-[200px] underline decoration-dotted underline-offset-2">
+                {event.fields['Venue']}
+              </span>
+            </button>
+          )}
 
           {costBadge && (
             <div className="flex items-center gap-1.5">
@@ -102,32 +103,8 @@ export default function EventCardMinimal({ event, onUpdate }: EventCardProps) {
           </div>
         )}
 
-        {/* Actions */}
-        <div className="flex items-center gap-2 pt-2">
-          <Button
-            onClick={handleRegister}
-            size="sm"
-            variant="outline"
-            className="text-xs"
-          >
-            Mark as Registered
-          </Button>
-          
-          {event.fields['Website'] && (
-            <Button
-              asChild
-              size="sm"
-              variant="ghost"
-              className="text-xs"
-            >
-              <a href={event.fields['Website']} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="h-3.5 w-3.5 mr-1" />
-                View Details
-              </a>
-            </Button>
-          )}
         </div>
-      </div>
-    </Card>
+      </Card>
+    </Link>
   );
 }
