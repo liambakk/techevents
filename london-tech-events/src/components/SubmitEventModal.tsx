@@ -120,8 +120,8 @@ export default function SubmitEventModal({ open, onOpenChange }: SubmitEventModa
         },
         body: JSON.stringify({
           ...formData,
-          dateStart: formData.dateStart?.toISOString(),
-          dateEnd: formData.dateEnd?.toISOString(),
+          dateStart: formData.dateStart ? format(formData.dateStart, 'yyyy-MM-dd') : undefined,
+          dateEnd: formData.dateEnd ? format(formData.dateEnd, 'yyyy-MM-dd') : undefined,
           cost: formData.cost ? parseFloat(formData.cost) : 0,
           estimatedAttendees: formData.estimatedAttendees ? parseInt(formData.estimatedAttendees) : undefined,
         }),

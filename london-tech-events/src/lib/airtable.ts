@@ -173,7 +173,8 @@ export class AirtableSubmissionsService {
       };
       
       // Add Submitted At in YYYY-MM-DD format (Airtable date field requirement)
-      recordData['Submitted At'] = new Date().toISOString().split('T')[0];
+      const today = new Date();
+      recordData['Submitted At'] = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
       
       const record = await submissionsTable.create(recordData);
       return {
