@@ -83,11 +83,19 @@ export default function EventCard({ event }: EventCardProps) {
 
         {/* Tags */}
         <div className="flex flex-wrap gap-1 mb-4">
-          {Array.isArray(event.fields['Category']) && event.fields['Category'].slice(0, 3).map((cat, idx) => (
-            <span key={idx} className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
-              {cat}
-            </span>
-          ))}
+          {event.fields['Category'] && (
+            typeof event.fields['Category'] === 'string' 
+              ? event.fields['Category'].split(';').slice(0, 3).map((cat, idx) => (
+                  <span key={idx} className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
+                    {cat.trim()}
+                  </span>
+                ))
+              : Array.isArray(event.fields['Category']) && event.fields['Category'].slice(0, 3).map((cat, idx) => (
+                  <span key={idx} className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
+                    {cat}
+                  </span>
+                ))
+          )}
         </div>
 
       </Link>
