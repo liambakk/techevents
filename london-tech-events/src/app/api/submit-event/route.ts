@@ -158,6 +158,7 @@ export async function POST(request: NextRequest) {
     });
 
     console.log('Message sent: %s', info.messageId);
+    console.log('Submission created successfully with ID:', submission.id);
     
     // If using test account, log the preview URL
     if (!process.env.SMTP_HOST) {
