@@ -80,11 +80,33 @@ export default function HomePage() {
     fetchEvents();
   }, [filters.category, filters.eventType, filters.costType, filters.priority]);
 
+  // Prevent body scroll when calendar tab is active
+  useEffect(() => {
+    if (activeTab === 'calendar') {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    };
+  }, [activeTab]);
+
   // Handle scroll for header animation with throttling
   useEffect(() => {
     let ticking = false;
     
     const handleScroll = () => {
+      // Don't handle scroll when calendar tab is active
+      if (activeTab === 'calendar') return;
+      
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentScrollY = window.scrollY;
@@ -111,7 +133,7 @@ export default function HomePage() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, activeTab]);
 
   // Filter by search term and calculate stats
   useEffect(() => {
@@ -272,8 +294,8 @@ export default function HomePage() {
       }} />
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <main className={`container mx-auto px-6 py-8 ${activeTab === 'calendar' ? 'h-[calc(100vh-64px)] overflow-hidden' : ''}`}>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 h-full flex flex-col">
           <TabsList className="grid w-fit grid-cols-3 h-11">
             <TabsTrigger value="dashboard" className="gap-2 text-xs">
               <LayoutDashboard className="h-3.5 w-3.5" />
@@ -327,8 +349,8 @@ export default function HomePage() {
           </TabsContent>
 
           {/* Calendar View */}
-          <TabsContent value="calendar" className="mt-6">
-            <div className="bg-card rounded-lg border border-border/40 p-6">
+          <TabsContent value="calendar" className="mt-6 flex-1 overflow-hidden">
+            <div className="bg-card rounded-lg border border-border/40 p-6 h-full">
               <Calendar events={filteredEvents} />
             </div>
           </TabsContent>
