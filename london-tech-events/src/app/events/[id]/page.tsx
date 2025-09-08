@@ -305,28 +305,46 @@ export default function EventDetailPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {event.fields['Category'] && Array.isArray(event.fields['Category']) && event.fields['Category'].length > 0 && (
+                  {event.fields['Category'] && (
                     <div>
                       <p className="text-sm font-medium text-muted-foreground mb-2">Categories</p>
                       <div className="flex flex-wrap gap-2">
-                        {event.fields['Category'].map((cat, idx) => (
-                          <Badge key={idx} variant="secondary">
-                            {cat}
-                          </Badge>
-                        ))}
+                        {(() => {
+                          const category = event.fields['Category'];
+                          let categories: string[] = [];
+                          if (typeof category === 'string') {
+                            categories = (category as string).split(';').map(cat => cat.trim()).filter(cat => cat);
+                          } else if (Array.isArray(category)) {
+                            categories = category as string[];
+                          }
+                          return categories.map((cat, idx) => (
+                            <Badge key={idx} variant="secondary">
+                              {cat}
+                            </Badge>
+                          ));
+                        })()}
                       </div>
                     </div>
                   )}
 
-                  {event.fields['Target Audience'] && Array.isArray(event.fields['Target Audience']) && event.fields['Target Audience'].length > 0 && (
+                  {event.fields['Target Audience'] && (
                     <div>
                       <p className="text-sm font-medium text-muted-foreground mb-2">Target Audience</p>
                       <div className="flex flex-wrap gap-2">
-                        {event.fields['Target Audience'].map((audience, idx) => (
-                          <Badge key={idx} variant="outline">
-                            {audience}
-                          </Badge>
-                        ))}
+                        {(() => {
+                          const targetAudience = event.fields['Target Audience'];
+                          let audiences: string[] = [];
+                          if (typeof targetAudience === 'string') {
+                            audiences = (targetAudience as string).split(';').map(audience => audience.trim()).filter(audience => audience);
+                          } else if (Array.isArray(targetAudience)) {
+                            audiences = targetAudience as string[];
+                          }
+                          return audiences.map((audience, idx) => (
+                            <Badge key={idx} variant="outline">
+                              {audience}
+                            </Badge>
+                          ));
+                        })()}
                       </div>
                     </div>
                   )}
