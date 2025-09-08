@@ -294,7 +294,7 @@ export default function HomePage() {
       }} />
 
       {/* Main Content */}
-      <main className={`container mx-auto px-6 py-8 ${activeTab === 'calendar' ? 'h-[calc(100vh-64px)] overflow-hidden' : ''}`}>
+      <main className={`container mx-auto px-6 py-8 ${activeTab === 'calendar' ? 'h-[calc(100vh-64px)]' : ''}`}>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 h-full flex flex-col">
           <TabsList className="grid w-fit grid-cols-3 h-11">
             <TabsTrigger value="dashboard" className="gap-2 text-xs">
@@ -349,8 +349,8 @@ export default function HomePage() {
           </TabsContent>
 
           {/* Calendar View */}
-          <TabsContent value="calendar" className="mt-6 flex-1 overflow-hidden">
-            <div className="bg-card rounded-lg border border-border/40 p-6 h-full">
+          <TabsContent value="calendar" className="mt-6 flex-1">
+            <div className="bg-card rounded-lg border border-border/40 p-6 h-full relative">
               <Calendar events={filteredEvents} />
             </div>
           </TabsContent>

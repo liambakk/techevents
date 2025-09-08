@@ -80,7 +80,7 @@ export default function Calendar({ events }: CalendarProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 calendar-container relative">
+    <div className="bg-white rounded-lg shadow-lg p-6 calendar-container relative overflow-visible">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">
           {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
@@ -111,7 +111,7 @@ export default function Calendar({ events }: CalendarProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden">
+      <div className="grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-visible">
         {dayNames.map(day => (
           <div key={day} className="bg-gray-50 p-3 text-center font-semibold text-gray-700">
             {day}
