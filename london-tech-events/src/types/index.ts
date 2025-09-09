@@ -20,6 +20,8 @@ export interface Event {
     'Registration Status'?: string;
     'Notes'?: string;
     'Estimated Attendees'?: number;
+    'Time'?: string;
+    'Location'?: string;
   };
 }
 
